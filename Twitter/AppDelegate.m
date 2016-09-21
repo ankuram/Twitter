@@ -7,6 +7,9 @@
 //
 
 #import "AppDelegate.h"
+#import "BDBOAuth1SessionManager.h"
+#import "User.h"
+#import "TwitterClient.h"
 
 @interface AppDelegate ()
 
@@ -47,5 +50,10 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    [[TwitterClient sharedInstance] openURL:url];
+        
+    return true;
+}
 
 @end
