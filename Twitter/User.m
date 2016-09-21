@@ -1,5 +1,5 @@
 //
-//  USER.m
+//  User.m
 //  Twitter
 //
 //  Created by Ankur Motreja on 9/20/16.
