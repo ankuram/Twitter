@@ -36,4 +36,8 @@
     self.tweetText.text = tweet.text;
 }
 
+- (IBAction)onProfileImageButton:(UIButton *)sender {
+    [self.viewController performSegueWithIdentifier:@"profileSegue" sender:self];
+}
+
 @end

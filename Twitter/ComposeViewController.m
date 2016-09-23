@@ -45,7 +45,7 @@
 }
 
 - (IBAction)onTweet:(UIButton *)sender {
-    Tweet *tweet = [[Tweet alloc] initWithText:self.tweetText.text replyToTweet:nil];
+    Tweet *tweet = [[Tweet alloc] initWithText:self.tweetText.text replyToTweet:self.replyToTweet];
     
     [[TwitterClient sharedInstance] sendTweet:tweet completion:^(NSString *tweetIdStr, NSError *error) {
         if (error) {

@@ -17,6 +17,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *date;
 @property (weak, nonatomic) IBOutlet UILabel *tweetText;
 
+@property (weak, nonatomic) UIViewController *viewController;
+
 - (void)setTweet:(Tweet *)tweet;
 
 @end

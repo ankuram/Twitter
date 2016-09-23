@@ -8,6 +8,7 @@
 
 #import "TweetViewController.h"
 #import <UIImageView+AFNetworking.h>
+#import "ComposeViewController.h"
 
 @interface TweetViewController ()
 @property (weak, nonatomic) IBOutlet UIImageView *profileImage;
@@ -54,6 +55,19 @@
 
 - (IBAction)onFavoriteTap:(UITapGestureRecognizer *)sender {
     [self.favoriteImage setHighlighted:[self.tweet favorite]];
+}
+
+- (IBAction)onReplyTap:(UITapGestureRecognizer *)sender {
+    [self performSegueWithIdentifier:@"replyTweetSegue" sender:nil];
+}
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.identifier isEqualToString:@"replyTweetSegue"]) {
+        ComposeViewController *vc = segue.destinationViewController;
+        
+        vc.replyToTweet = self.tweet;
+        vc.title = @"Tweet";
+    }
 }
 
 

@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Tweet.h"
 
 @interface ComposeViewController : UIViewController
+
+@property (nonatomic, strong) Tweet *replyToTweet;
 
 @end

@@ -9,6 +9,7 @@
 #import "tweetsViewController.h"
 #import "tweetViewController.h"
 #import "ComposeViewController.h"
+#import "profileViewController.h"
 #import "TwitterClient.h"
 #import "TweetCell.h"
 #import "Tweet.h"
@@ -94,6 +95,8 @@
     
     tweet = self.tweets[indexPath.row];
     
+    cell.viewController = self;
+    
     [cell setTweet:tweet];
     
     return cell;
@@ -110,6 +113,11 @@
     
         vc.tweet = self.tweets[indexPath.row];
         vc.title = @"Tweet";
+    } else if ([segue.identifier isEqualToString:@"profileSegue"]) {
+        profileViewController *vc = segue.destinationViewController;
+        Tweet *tweet =self.tweets[indexPath.row];
+        vc.user = tweet.user;
+        vc.title = @"Profile";
     }
 }
 

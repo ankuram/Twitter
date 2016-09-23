@@ -11,6 +11,7 @@
 #import <UIImageView+AFNetworking.h>
 #import "TweetCell.h"
 #import "Tweet.h"
+#import "TweetViewController.h"
 
 @interface profileViewController () <UITableViewDelegate, UITableViewDataSource>
 
@@ -32,7 +33,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    User *user = [User getCurrentUser];
+    User *user = self.user ? self.user : [User getCurrentUser];
     
     [[TwitterClient sharedInstance] userTimeline:user completion:^(NSArray *tweets, NSError *error) {
         NSLog(@"userTimeline returned in profileViewController");
@@ -70,6 +71,20 @@
     [cell setTweet:tweet];
     
     return cell;
+}
+
+- (void) prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    UITableViewCell *cell = sender;
+    NSIndexPath *indexPath;
+    
+    indexPath = [self.tableView indexPathForCell:cell];
+    
+    if ([segue.identifier isEqualToString:@"profileViewTweetSegue"]) {
+        TweetViewController *vc = segue.destinationViewController;
+        
+        vc.tweet = self.tweets[indexPath.row];
+        vc.title = @"Tweet";
+    }
 }
 
 /*
