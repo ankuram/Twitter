@@ -17,6 +17,13 @@
 @property (nonatomic) NSInteger retweetCount;
 @property (nonatomic) NSInteger favoriteCount;
 
-- (id) initWithDictionary:(NSDictionary *)dictionary;
+@property (nonatomic, strong) NSString *idStr;
+@property (nonatomic, strong) NSString *replyToIdStr;
+@property (nonatomic, strong) NSString *retweetIdStr;
 
+- (id) initWithDictionary:(NSDictionary *)dictionary;
+- (id) initWithText:(NSString *)text replyToTweet:(Tweet *)replyToTweet;
+
++ (NSArray *)tweetsWithArray:(NSArray *)array;
+    
 @end

@@ -7,6 +7,7 @@
 //
 
 #import "MenuViewController.h"
+#import "tweetsViewController.h"
 
 @interface MenuViewController () <UITableViewDataSource, UITableViewDelegate>
 
@@ -15,6 +16,9 @@
 @property (strong, nonatomic) UIViewController *profileViewController;
 @property (strong, nonatomic) UIViewController *timelineViewController;
 @property (strong, nonatomic) UIViewController *mentionsViewController;
+
+@property (strong, nonatomic) UINavigationController *profileNavigationController;
+@property (strong, nonatomic) UINavigationController *tweetsNavigationController;
 
 @end
 
@@ -32,9 +36,8 @@
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     
-    self.profileViewController = [storyboard instantiateViewControllerWithIdentifier:@"profileViewController"];
-    self.timelineViewController = [storyboard instantiateViewControllerWithIdentifier:@"timelineViewController"];
-    self.mentionsViewController = [storyboard instantiateViewControllerWithIdentifier:@"mentionsViewController"];
+    self.profileNavigationController = [storyboard instantiateViewControllerWithIdentifier:@"profileNavigationController"];
+    self.tweetsNavigationController = [storyboard instantiateViewControllerWithIdentifier:@"tweetsNavigationController"];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -51,13 +54,13 @@
     
     switch (indexPath.row) {
         case 0:
-            cell.textLabel.text = @"First";
+            cell.textLabel.text = @"Profile";
             break;
         case 1:
-            cell.textLabel.text = @"Second";
+            cell.textLabel.text = @"Timeline";
             break;
         case 2:
-            cell.textLabel.text = @"Third";
+            cell.textLabel.text = @"Mentions";
     }
     
     return cell;
@@ -66,15 +69,23 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:true];
     
+    tweetsViewController *tweetsVC = (tweetsViewController *)[self.tweetsNavigationController topViewController];
+    
     switch (indexPath.row) {
         case 0:
-            [self.layoutViewController setContentViewController:self.profileViewController];
+            [self.layoutViewController setContentViewController:self.profileNavigationController];
             break;
         case 1:
-            [self.layoutViewController setContentViewController:self.timelineViewController];
+            [self.layoutViewController setContentViewController:self.tweetsNavigationController];
+            tweetsVC.endpoint = @"timeline";
+            tweetsVC.title = @"Timeline";
+            [tweetsVC fetchTweets];
             break;
         case 2:
-            [self.layoutViewController setContentViewController:self.mentionsViewController];
+            [self.layoutViewController setContentViewController:self.tweetsNavigationController];
+            tweetsVC.endpoint = @"mentions";
+            tweetsVC.title = @"Mentions";
+            [tweetsVC fetchTweets];
     }
 
 }

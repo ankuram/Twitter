@@ -8,6 +8,7 @@
 
 #import "TwitterClient.h"
 #import "User.h"
+#import "Tweet.h"
 
 NSString * const twitterConsumerKey = @"w6twAFAEsvTr2DgCZYift1vS1";
 NSString * const twitterConsumerSecret = @"RsWveAUUvye3wRQgXdwd3x86qDeMucKATMBm0LuEziBO4juVRm";
@@ -68,7 +69,7 @@ NSString * const twitterBaseUrl = @"https://api.twitter.com";
             NSLog(@"response: %@", responseObject);
             
             User *user = [[User alloc] initWithDictionary:responseObject];
-            //[User setCurrentUser:user];
+            [User setCurrentUser:user];
             self.loginCompletion(user, nil);
             
             NSLog(@"%@", user.name);
@@ -84,6 +85,53 @@ NSString * const twitterBaseUrl = @"https://api.twitter.com";
         self.loginCompletion(nil, error);
     }];
     
+}
+
+- (void)userTimeline:(User *)user completion:(void (^)(NSArray *tweets, NSError *error))completion {
+    BDBOAuth1SessionManager *twitterClient = [TwitterClient sharedInstance];
+    
+    NSString *getUrl = [NSString stringWithFormat:@"1.1/statuses/user_timeline.json?include_rts=1&count=20&include_my_retweet=1&screen_name=%@", user.screenname];
+    [twitterClient GET:getUrl parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        NSArray *tweets = [Tweet tweetsWithArray:responseObject];
+        completion(tweets, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
+- (void)mentionsTimeline:(void (^)(NSArray *tweets, NSError *error))completion {
+    [self GET:@"1.1/statuses/mentions_timeline.json?include_my_retweet=1" parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        //        NSLog([NSString stringWithFormat:@"mentions timeline: %@", responseObject]);
+        NSArray *tweets = [Tweet tweetsWithArray:responseObject];
+        completion(tweets, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
+- (void)homeTimeline:(void (^)(NSArray *tweets, NSError *error))completion {
+    [self GET:@"1.1/statuses/home_timeline.json?include_my_retweet=1" parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        NSArray *tweets = [Tweet tweetsWithArray:responseObject];
+        completion(tweets, nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
+- (void)sendTweet:(Tweet *)tweet completion:(void (^)(NSString *, NSError *))completion {
+    NSString *postUrl;
+    
+    if (tweet.replyToIdStr) {
+        postUrl = [NSString stringWithFormat:@"1.1/statuses/update.json?status=%@&in_reply_to_status_id=%@", tweet.text, tweet.replyToIdStr];
+    } else {
+        postUrl = [NSString stringWithFormat:@"1.1/statuses/update.json?status=%@", tweet.text];
+    }
+    
+    [self POST:[postUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        completion(responseObject[@"id_str"], nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
 }
 
 @end

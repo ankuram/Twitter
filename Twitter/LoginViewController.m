@@ -9,6 +9,7 @@
 #import "LoginViewController.h"
 #import "BDBOAuth1SessionManager.h"
 #import "TwitterClient.h"
+#import "LayoutViewController.h"
 
 @interface LoginViewController ()
 
@@ -40,6 +41,10 @@
 
 - (IBAction)onLoginButton:(UIButton *)sender {
     [[TwitterClient sharedInstance] login:^(User *user, NSError *error) {
+        [self performSegueWithIdentifier:@"loginSegue" sender:nil];
+        
+        //LayoutViewController *vc = [[LayoutViewController alloc] init];
+        //[self presentViewController:vc animated:YES completion:nil];
     }];
 }
 

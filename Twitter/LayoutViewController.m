@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UIView *ContentView;
 
 @property (strong, nonatomic) MenuViewController *menuViewController;
+@property (strong, nonatomic) UINavigationController *menuNavigationController;
 
 @property (nonatomic, assign) BOOL isMenuOpen;
 
@@ -31,16 +32,27 @@
     self.isMenuOpen = false;
     
     UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    
+/* code before introducing the menu navigation controller
     self.menuViewController = [storyboard instantiateViewControllerWithIdentifier:@"MenuViewController"];
     [self addChildViewController:self.menuViewController];
     self.menuViewController.layoutViewController = self;
     self.menuViewController.view.frame = self.MenuView.bounds;
     [self.MenuView addSubview:self.menuViewController.view];
     [self.menuViewController didMoveToParentViewController:self];
-
-    //self.leftMarginConstraint.constant = 200;
-    //[self.view layoutIfNeeded];
+*/
+    
+    self.menuNavigationController = [storyboard instantiateViewControllerWithIdentifier:@"MenuNavigationController"];
+    self.menuViewController = (MenuViewController *)[self.menuNavigationController topViewController];
+    [self addChildViewController:self.menuNavigationController];
+    self.menuViewController.layoutViewController = self;
+    self.menuNavigationController.view.frame = self.MenuView.bounds;
+    [self.MenuView addSubview:self.menuNavigationController.view];
+    [self.menuNavigationController didMoveToParentViewController:self];
+    
+    self.leftMarginConstraint.constant = 0;
+    [self.view layoutIfNeeded];
+    
+    [self setContentViewController:[storyboard instantiateViewControllerWithIdentifier:@"profileNavigationController"]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -48,11 +60,16 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)setContentViewController:(UIViewController *)contentViewController {
-    [self addChildViewController:contentViewController];
-    contentViewController.view.frame = self.ContentView.bounds;
-    [self.ContentView addSubview:contentViewController.view];
-    [contentViewController didMoveToParentViewController:self];
+- (void)setContentViewController:(UINavigationController *)contentNavigationController {
+    [contentNavigationController.view removeFromSuperview];
+    
+    [self addChildViewController:contentNavigationController];
+    contentNavigationController.view.frame = self.ContentView.bounds;
+    
+    [self.ContentView addSubview:contentNavigationController.view];
+    [contentNavigationController didMoveToParentViewController:self];
+    
+    [self closeMenu];
 }
 
 - (void) openMenu {
