@@ -21,5 +21,9 @@
 - (void)homeTimeline:(void (^)(NSArray *tweets, NSError *error))completion;
 - (void)mentionsTimeline:(void (^)(NSArray *tweets, NSError *error))completion;
 - (void)sendTweet:(Tweet *)tweet completion:(void (^)(NSString *, NSError *))completion;
+- (void)retweet:(Tweet *)tweet completion:(void (^)(NSString *retweetIdStr, NSError *error))completion;
+- (void)unretweet:(Tweet *)tweet completion:(void (^)(NSError *error))completion;
+- (void)favorite:(Tweet *)tweet completion:(void (^)(NSError *error))completion;
+- (void)unfavorite:(Tweet *)tweet completion:(void (^)(NSError *error))completion;
 
 @end

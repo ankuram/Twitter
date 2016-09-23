@@ -21,8 +21,14 @@
 @property (nonatomic, strong) NSString *replyToIdStr;
 @property (nonatomic, strong) NSString *retweetIdStr;
 
+@property (nonatomic) BOOL retweeted;
+@property (nonatomic) BOOL favorited;
+
 - (id) initWithDictionary:(NSDictionary *)dictionary;
 - (id) initWithText:(NSString *)text replyToTweet:(Tweet *)replyToTweet;
+
+- (BOOL) retweet;
+- (BOOL) favorite;
 
 + (NSArray *)tweetsWithArray:(NSArray *)array;
     

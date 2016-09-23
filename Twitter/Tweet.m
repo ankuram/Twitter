@@ -7,6 +7,7 @@
 //
 
 #import "Tweet.h"
+#import "TwitterClient.h"
 
 @implementation Tweet
 
@@ -65,6 +66,53 @@
              };
     
     return [self initWithDictionary:data];
+}
+
+- (BOOL) retweet {
+    self.retweeted = !self.retweeted;
+    if (self.retweeted) {
+        [[TwitterClient sharedInstance] retweet:self completion:^(NSString *retweetIdStr, NSError *error) {
+            if (error) {
+                NSLog(@"Retweet failed");
+            } else {
+                NSLog(@"%@", [NSString stringWithFormat:@"Retweet successful, retweet_id_str: %@", retweetIdStr]);
+                self.retweetIdStr = retweetIdStr;
+            }
+        }];
+    } else {
+        [[TwitterClient sharedInstance] unretweet:self completion:^(NSError *error) {
+            if (error) {
+                NSLog(@"Unretweet failed");
+            } else {
+                NSLog(@"Unretweet successful");
+            }
+        }];
+    }
+    
+    return self.retweeted;
+}
+
+- (BOOL) favorite {
+    self.favorited = !self.favorited;
+    if (self.favorited) {
+        [[TwitterClient sharedInstance] favorite:self completion:^(NSError *error) {
+            if (error) {
+                NSLog(@"Favorite failed");
+            } else {
+                NSLog(@"Favorite successful");
+            }
+        }];
+    } else {
+        [[TwitterClient sharedInstance] unfavorite:self completion:^(NSError *error) {
+            if (error) {
+                NSLog(@"Unfavorite failed");
+            } else {
+                NSLog(@"Unfavorite successful");
+            }
+        }];
+    }
+    
+    return self.favorited;
 }
 
 @end

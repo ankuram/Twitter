@@ -18,6 +18,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *tweetText;
 @property (weak, nonatomic) IBOutlet UILabel *date;
 
+@property (weak, nonatomic) IBOutlet UIImageView *retweetImage;
+@property (weak, nonatomic) IBOutlet UIImageView *favoriteImage;
 @end
 
 @implementation TweetViewController
@@ -45,6 +47,15 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (IBAction)onRetweetTap:(UITapGestureRecognizer *)sender {
+    [self.retweetImage setHighlighted:[self.tweet retweet]];
+}
+
+- (IBAction)onFavoriteTap:(UITapGestureRecognizer *)sender {
+    [self.favoriteImage setHighlighted:[self.tweet favorite]];
+}
+
 
 /*
 #pragma mark - Navigation

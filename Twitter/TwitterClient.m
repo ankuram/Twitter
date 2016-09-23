@@ -101,7 +101,6 @@ NSString * const twitterBaseUrl = @"https://api.twitter.com";
 
 - (void)mentionsTimeline:(void (^)(NSArray *tweets, NSError *error))completion {
     [self GET:@"1.1/statuses/mentions_timeline.json?include_my_retweet=1" parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
-        //        NSLog([NSString stringWithFormat:@"mentions timeline: %@", responseObject]);
         NSArray *tweets = [Tweet tweetsWithArray:responseObject];
         completion(tweets, nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
@@ -131,6 +130,47 @@ NSString * const twitterBaseUrl = @"https://api.twitter.com";
         completion(responseObject[@"id_str"], nil);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         completion(nil, error);
+    }];
+}
+
+- (void)retweet:(Tweet *)tweet completion:(void (^)(NSString *, NSError *))completion {
+    NSString *postUrl = [NSString stringWithFormat:@"1.1/statuses/retweet/%@.json", tweet.idStr];
+    
+    [self POST:[postUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        completion(responseObject[@"id_str"], nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(nil, error);
+    }];
+}
+
+- (void)unretweet:(Tweet *)tweet completion:(void (^)(NSError *error))completion {
+    NSString *postUrl = [NSString stringWithFormat:@"1.1/statuses/destroy/%@.json", tweet.retweetIdStr];
+    
+    [self POST:[postUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        completion(nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(error);
+    }];
+}
+
+- (void)favorite:(Tweet *)tweet completion:(void (^)(NSError *error))completion {
+    NSString *postUrl = [NSString stringWithFormat:@"1.1/favorites/create.json?id=%@", tweet.idStr];
+    
+    [self POST:[postUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        completion(nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(error);
+    }];
+}
+
+- (void)unfavorite:(Tweet *)tweet completion:(void (^)(NSError *error))completion {
+    NSString *postUrl = [NSString stringWithFormat:@"1.1/favorites/destroy.json?id=%@", tweet.idStr];
+    
+    [self POST:[postUrl stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding] parameters:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nonnull responseObject) {
+        //        NSLog([NSString stringWithFormat:@"successfully unfavorited tweet: %@", responseObject]);
+        completion(nil);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        completion(error);
     }];
 }
 
